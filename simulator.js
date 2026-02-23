@@ -314,48 +314,13 @@ function openTaskMap() {
 // Lesson 1: Getting Started (Tasks 0-11)
     const lesson1Header = document.createElement('div');
     lesson1Header.className = 'lesson-header';
-    lesson1Header.innerHTML = '<h3>Lesson 1: Getting Started</h3>';
+    lesson1Header.innerHTML = '<h3>End of Module Assessment</h3>';
     grid.appendChild(lesson1Header);
     
-    challenges.slice(0, 12).forEach((task) => {
+    challenges.slice(0, 24).forEach((task) => {
         const node = createTaskNode(task);
         grid.appendChild(node);
-    });
-    
-    // Lesson 2: Comparators (Tasks 12-19)
-    const lesson2Header = document.createElement('div');
-    lesson2Header.className = 'lesson-header';
-    lesson2Header.innerHTML = '<h3>Lesson 2: Comparators</h3>';
-    grid.appendChild(lesson2Header);
-    
-    challenges.slice(12, 20).forEach((task) => {
-        const node = createTaskNode(task);
-        grid.appendChild(node);
-    });
-
-    // Lesson 3: Real World Logic (Tasks 20-25)
-    const lesson3Header = document.createElement('div');
-    lesson3Header.className = 'lesson-header';
-    lesson3Header.innerHTML = '<h3>Lesson 3: Real World Logic</h3>';
-    grid.appendChild(lesson3Header);
-    
-    challenges.slice(20, 26).forEach((task) => {
-        const node = createTaskNode(task);
-        grid.appendChild(node);
-    });
-
-    // Lesson 4: Boolean Expressions (Tasks 26+)
-    const lesson4Header = document.createElement('div'); // Name changed to lesson4Header
-    lesson4Header.className = 'lesson-header';
-    lesson4Header.innerHTML = '<h3>Lesson 4: Boolean Expressions</h3>'; // Title updated
-    grid.appendChild(lesson4Header);
-    
-    // slice(26) includes Task 26 and everything after it
-    challenges.slice(26).forEach((task) => {
-        const node = createTaskNode(task);
-        grid.appendChild(node);
-    });
-    
+    });    
     document.getElementById('taskMapModal').style.display = 'block';
 }
 
@@ -1213,4 +1178,5 @@ window.onclick = function(event) {
 }
 
 // Initial canvas size
+
 resizeCanvas();
