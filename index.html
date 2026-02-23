@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logic Gate Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Tool Header Specific Fixes */
+        .tool-btn { 
+            width: 44px !important; 
+            height: 44px !important; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 0 !important;
+        }
+
+        /* Ensure all icons (SVG and Text) have the same visual footprint */
+        .tool-btn svg, .tool-btn span {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #text-tool span {
+            font-family: "Times New Roman", serif;
+            font-size: 26px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        /* Ensure active icons swap colors correctly */
+        .tool-btn.active {
+            background: #00d4ff !important;
+            color: #16213e !important;
+        }
+        
+        .tool-btn.active svg {
+            fill: #16213e;
+            stroke: #16213e;
+        }
+
+        .input-output-section {
+            margin-top: 50px;
+        }
+
+        /* Essential functional styles */
+        .text-label {
+            position: absolute; background: transparent; border: 1px dashed transparent;
+            color: #00d4ff; padding: 5px; font-weight: bold; cursor: move;
+            min-width: 50px; outline: none; z-index: 5; font-size: 16px;
+        }
+        .text-label:focus { border-color: #00d4ff; background: rgba(0, 212, 255, 0.1); }
+        .tr-active { background-color: rgba(78, 204, 163, 0.2) !important; outline: 1px solid #4ecca3; }
+        .modal { background-color: rgba(0,0,0,0.6) !important; }
+        .modal-content { z-index: 10001; position: relative; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-content">
+                <h3>Logic Gates</h3>
+                <div class="gate-palette">
+                    <div class="palette-item" draggable="true" data-gate="AND">AND</div>
+                    <div class="palette-item" draggable="true" data-gate="OR">OR</div>
+                    <div class="palette-item" draggable="true" data-gate="NOT">NOT</div>
+                    <div class="palette-item" draggable="true" data-gate="NAND">NAND</div>
+                    <div class="palette-item" draggable="true" data-gate="NOR">NOR</div>
+                    <div class="palette-item" draggable="true" data-gate="XOR">XOR</div>
+                </div>
+
+                <div class="input-output-section">
+                    <h3>Inputs/Outputs</h3>
+                    <div class="gate-palette">
+                        <div class="palette-item" draggable="true" data-gate="INPUT">Input</div>
+                        <div class="palette-item" draggable="true" data-gate="OUTPUT">Output</div>
+			<div class="palette-item" draggable="true" data-gate="COMPARATOR">COMPARATOR</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-area">
+
+
+            <div class="toolbar">
+                <button class="btn tool-btn active" id="select-tool" onclick="setTool('select')" title="Select Tool">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M7 2l12 11.2-5.8.8 3.5 6-2.5 1.5-3.5-6-3.7 4.5V2z" fill="currentColor"/>
+                    </svg>
+                </button>
+
+                <button class="btn tool-btn" id="text-tool" onclick="setTool('text')" title="Text Tool">
+                    <span>T</span>
+                </button>
+
+                <button class="btn tool-btn" id="delete-tool" onclick="setTool('delete')" title="Delete Tool">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </button>
+
+                <div style="flex-grow: 1;"></div> 
+
+		<button class="btn tool-btn" id="clear-btn" onclick="clearCanvas()" title="Clear All / Reset Canvas">
+		    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		        <polyline points="23 4 23 10 17 10"></polyline>
+		        <polyline points="1 20 1 14 7 14"></polyline>
+		        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+		    </svg>
+		</button>
+
+                <button class="btn" onclick="saveCircuit()" title="Save">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                </button>
+                <button class="btn" onclick="loadCircuit()" title="Load">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"></path></svg>
+                </button>
+
+    
+                <button class="btn tool-btn" id="fullscreen-btn" onclick="toggleFullscreen()" title="Full Screen (F)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                    </svg>
+                </button>
+
+                <button id="sim-toggle-btn" class="btn tool-btn" onclick="toggleSimModal()" title="Toggle Simulation">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                        <line x1="7" y1="2" x2="7" y2="22"></line>
+                        <line x1="17" y1="2" x2="17" y2="22"></line>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <line x1="2" y1="7" x2="7" y2="7"></line>
+                        <line x1="2" y1="17" x2="7" y2="17"></line>
+                        <line x1="17" y1="17" x2="22" y2="17"></line>
+                        <line x1="17" y1="7" x2="22" y2="7"></line>
+                    </svg>
+                </button>
+
+                <button class="btn" id="table-toggle-btn" onclick="toggleTruthTable()" title="Truth Table">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                </button>
+                <button class="btn" id="sandbox-toggle" onclick="toggleSandboxMode()" title="Mode">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                </button>
+            </div>
+
+            <div class="canvas-container" id="canvas-container">
+                <canvas id="canvas"></canvas>
+            </div>
+            
+            <div class="truth-table-panel" id="truth-table" style="display: none;">
+                <h4>Truth Table</h4>
+                <div id="truth-table-content"></div>
+            </div>
+        </div>
+
+        <div class="task-sidebar" id="task-sidebar">
+            <div style="padding: 20px 20px 10px 20px; flex-shrink: 0;">
+                <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="openProgressModal()">Progress</button>        
+                <button class="btn" style="width: 100%;" onclick="openTaskMap()">Task Map</button>
+                <h2 id="task-title" style="color: #00d4ff; margin-top:15px;">Select a Task</h2>
+                <div id="star-container" class="star-rating"></div>
+            </div>
+
+            <div id="task-content">
+                <p id="task-desc">Choose a challenge from the map.</p>
+        
+                <div id="active-task-controls" style="display:none; margin-top:20px;">
+                    <div id="task-interaction-area"></div>
+                    <button id="check-btn" class="btn" style="width: 100%; background: #4ecca3; color: #16213e; border-color: #4ecca3; margin-top: 15px;" onclick="checkCurrentStep()">Check Step</button>
+                    <div id="task-status" class="status-msg"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="taskMapModal" class="modal">
+        <div class="modal-content">
+            <span style="float:right; cursor:pointer; font-size:24px;" onclick="closeTaskMap()">&times;</span>
+            <h2>Challenge Map</h2>
+            <div id="task-grid" class="task-grid"></div>
+        </div>
+    </div>
+
+    <div id="custom-modal" class="modal" style="display:none;">
+        <div class="modal-content" style="text-align: center; max-width: 400px;">
+            <div id="modal-icon" style="font-size: 60px; margin-bottom: 10px;"></div>
+            <h2 id="modal-title" style="margin-bottom: 10px;"></h2>
+            <p id="modal-message" style="margin-bottom: 20px;"></p>
+            <button id="modal-btn" class="btn" style="width: 100%;"></button>
+        </div>
+    </div>
+
+
+    <div id="comp-modal" class="custom-modal-overlay">
+        <div class="modal-content">
+            <h2 class="modal-title-themed">Comparator Setup</h2>
+        
+            <div class="modal-input-group">
+                <label>Threshold Value</label>
+                <input type="number" id="comp-threshold-input" placeholder="e.g. 50">
+            </div>
+
+            <div class="modal-input-group">
+                <label>Comparison Type</label>
+                <select id="comp-operator-input">
+                    <option value=">">Greater Than (>)</option>
+                    <option value="<">Less Than (<)</option>
+                    <option value="==">Equal To (==)</option>
+		    <option value="!=">Not Equal To (!=)</option>
+                </select>
+            </div>
+
+            <button onclick="saveComparatorSettings()" class="modal-apply-btn">APPLY SETTINGS</button>
+        </div>
+    </div>
+
+
+    <div id="sim-modal" class="custom-modal-overlay" style="display: none; pointer-events: none;">
+        <div class="modal-content" style="pointer-events: all; width: 400px; padding: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0; color: #00d4ff;">Live Simulation</h3>
+                <button onclick="toggleSimModal()" style="background:none; border:none; color:#888; cursor:pointer; font-size:24px;">&times;</button>
+            </div>
+            
+            <select id="sim-selector" onchange="updateSimulationVideo()" style="width: 100%; padding: 8px; background: #1a1a2e; color: white; border: 1px solid #0f3460; border-radius: 4px; margin-bottom: 10px; cursor: pointer;">
+                </select>
+
+            <div style="background: #000; border-radius: 8px; overflow: hidden; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;">
+                <video id="sim-video-player" loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                </video>
+            </div>
+        </div>
+    </div>
+
+<div id="progressModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <span style="float:right; cursor:pointer; font-size:24px;" onclick="closeProgressModal()">&times;</span>
+        <h2 style="color: #00d4ff; margin-bottom: 15px;">Progress Code</h2>
+        <p style="margin-bottom: 10px; font-size: 14px; color: #ccc;">Copy this code to save your work, or paste a code here to load it.</p>
+        
+        <textarea id="progress-code-area" placeholder="Paste progress code here..."></textarea>
+        
+        <div class="modal-actions">
+            <button class="btn" style="border-color: #666; color: #ccc;" onclick="closeProgressModal()">Cancel</button>
+            <button class="btn" onclick="copyProgressCode()">Copy Code</button>
+            <button class="btn" style="border-color: #4ecca3; color: #4ecca3;" onclick="loadProgressFromArea()">Load Progress</button>
+        </div>
+    </div>
+</div>
+
+    <script src="tasks.js"></script>
+    <script src="simulator.js"></script>
+</body>
+</html>
