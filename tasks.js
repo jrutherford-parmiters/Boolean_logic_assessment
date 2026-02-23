@@ -253,16 +253,19 @@ const challenges = [
             targetTruthTable: [0, 0, 0, 1, 0, 1, 0, 1]
         }]
     },
-    {
-        id: 23,
-        title: "Question 24: Build Expression B",
-        steps: [{
-            type: "build",
-            description: "Build: (Input 1 AND Input 2) OR (Input 3 AND Input 4).",
-            requiredInputs: 4, requiredOutputs: 1, requiredAND: 2, requiredOR: 1,
-            targetTruthTable: [0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1]
-        }]
-    },
+   {
+           id: 23,
+           title: "Question 24: Build Expression B",
+           steps: [{
+               type: "build",
+               description: "Build the circuit for the expression:\n(Input 1 AND Input 2) OR (Input 3 AND Input 4)",
+               requiredInputs: 4, 
+               requiredOutputs: 1, 
+               requiredAND: 2, 
+               requiredOR: 1,
+               targetTruthTable: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]
+           }]
+       },
     {
         id: 24,
         title: "Question 25: The Master Circuit",
@@ -274,3 +277,4 @@ const challenges = [
         }]
     }
 ];
+
