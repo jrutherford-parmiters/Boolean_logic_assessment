@@ -103,46 +103,39 @@ const challenges = [
             answer: 2
         }]
     },
-{
+    {
         id: 9,
-        title: "Question 10: Build a Comparator",
+        title: "Question 10: Comparator Logic",
         steps: [{
-            type: "comparatorConfig",
-            description: "Place a Comparator. Configure it so it outputs 1 only if the Input is GREATER THAN 50.",
-            requiredInputs: 1, 
-            requiredOutputs: 1, 
-            requiredComparators: 1,
-            targetOperator: ">",
-            targetValue: 50
+            type: "investigate",
+            description: "A comparator is set to: [Input > 50]. If the sensor sends a value of 40, what is the output of the gate?",
+            question: "Output is:",
+            options: ["0 (False)", "1 (True)"],
+            answer: 0
         }]
     },
     {
         id: 10,
-        title: "Question 11: Build an Equality Check",
+        title: "Question 11: Equality Check",
         steps: [{
-            type: "comparatorConfig",
-            description: "Place a Comparator. Configure it so it outputs 1 only if the Input is EXACTLY 0.",
-            requiredInputs: 1, 
-            requiredOutputs: 1, 
-            requiredComparators: 1,
-            targetOperator: "=",
-            targetValue: 0
+            type: "investigate",
+            description: "A comparator is set to: [Input = 0]. If the input value is 0, what is the output?",
+            question: "Output is:",
+            options: ["0 (False)", "1 (True)"],
+            answer: 1
         }]
     },
     {
         id: 11,
-        title: "Question 12: Build Inverted Data Logic",
+        title: "Question 12: Not Equal To",
         steps: [{
-            type: "comparatorConfig",
-            description: "Place a Comparator. Configure it so it outputs 1 if the input is NOT EQUAL TO 10.",
-            requiredInputs: 1, 
-            requiredOutputs: 1, 
-            requiredComparators: 1,
-            targetOperator: "≠",
-            targetValue: 10
+            type: "investigate",
+            description: "A comparator is set to: [Input ≠ 10]. If the input value is 5, what is the output?",
+            question: "Output is:",
+            options: ["0 (False)", "1 (True)"],
+            answer: 1
         }]
     },
-
     // --- PART 3: COMPLEX CIRCUITS / DAISY CHAINING (Q13 - Q19) ---
     {
         id: 12,
@@ -286,5 +279,6 @@ const challenges = [
         }]
     }
 ];
+
 
 
