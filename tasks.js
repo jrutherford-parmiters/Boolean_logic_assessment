@@ -103,34 +103,43 @@ const challenges = [
             answer: 2
         }]
     },
-    {
+{
         id: 9,
         title: "Question 10: Build a Comparator",
         steps: [{
-            type: "build",
-            description: "Build a circuit that outputs 1 if the input value is GREATER THAN 50.",
-            requiredInputs: 1, requiredOutputs: 1, requiredComparators: 1,
-            targetTruthTable: [0] 
+            type: "comparatorConfig",
+            description: "Place a Comparator. Configure it so it outputs 1 only if the Input is GREATER THAN 50.",
+            requiredInputs: 1, 
+            requiredOutputs: 1, 
+            requiredComparators: 1,
+            targetOperator: ">",
+            targetValue: 50
         }]
     },
     {
         id: 10,
         title: "Question 11: Build an Equality Check",
         steps: [{
-            type: "build",
-            description: "Build a circuit that outputs 1 only if the input is EXACTLY 0.",
-            requiredInputs: 1, requiredOutputs: 1, requiredComparators: 1,
-            targetTruthTable: [0]
+            type: "comparatorConfig",
+            description: "Place a Comparator. Configure it so it outputs 1 only if the Input is EXACTLY 0.",
+            requiredInputs: 1, 
+            requiredOutputs: 1, 
+            requiredComparators: 1,
+            targetOperator: "=",
+            targetValue: 0
         }]
     },
     {
         id: 11,
         title: "Question 12: Build Inverted Data Logic",
         steps: [{
-            type: "build",
-            description: "Build a circuit that outputs 1 if the input is NOT EQUAL TO 10.",
-            requiredInputs: 1, requiredOutputs: 1, requiredComparators: 1,
-            targetTruthTable: [0]
+            type: "comparatorConfig",
+            description: "Place a Comparator. Configure it so it outputs 1 if the input is NOT EQUAL TO 10.",
+            requiredInputs: 1, 
+            requiredOutputs: 1, 
+            requiredComparators: 1,
+            targetOperator: "≠",
+            targetValue: 10
         }]
     },
 
@@ -277,4 +286,5 @@ const challenges = [
         }]
     }
 ];
+
 
