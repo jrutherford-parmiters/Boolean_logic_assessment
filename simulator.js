@@ -317,7 +317,7 @@ function openTaskMap() {
     lesson1Header.innerHTML = '<h3>End of Module Assessment</h3>';
     grid.appendChild(lesson1Header);
     
-    challenges.slice(0, 24).forEach((task) => {
+    challenges.slice(0, 25).forEach((task) => {
         const node = createTaskNode(task);
         grid.appendChild(node);
     });    
@@ -1180,3 +1180,4 @@ window.onclick = function(event) {
 // Initial canvas size
 
 resizeCanvas();
+
