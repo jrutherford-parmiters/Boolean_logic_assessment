@@ -199,9 +199,12 @@
     </div>
 
 
-    <div id="comp-modal" class="custom-modal-overlay">
+    <div id="comp-modal" class="custom-modal-overlay" onclick="handleCompModalBackdropClick(event)">
         <div class="modal-content">
-            <h2 class="modal-title-themed">Comparator Setup</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 class="modal-title-themed" style="margin: 0;">Comparator Setup</h2>
+                <button onclick="closeComparatorModal()" style="background:none; border:none; color:#888; cursor:pointer; font-size:28px; line-height:1; padding: 0 4px;" title="Close">&times;</button>
+            </div>
         
             <div class="modal-input-group">
                 <label>Threshold Value</label>
