@@ -683,6 +683,17 @@ function configureComparator(gateId) {
     document.getElementById('comp-modal').style.display = 'flex';
 }
 
+function closeComparatorModal() {
+    document.getElementById('comp-modal').style.display = 'none';
+    activeConfigGateId = null;
+}
+
+function handleCompModalBackdropClick(event) {
+    if (event.target === document.getElementById('comp-modal')) {
+        closeComparatorModal();
+    }
+}
+
 function saveComparatorSettings() {
     const gate = gates.find(g => g.id === activeConfigGateId);
     if (gate) {
@@ -697,8 +708,7 @@ function saveComparatorSettings() {
         
         evaluateCircuit();
     }
-    document.getElementById('comp-modal').style.display = 'none';
-    activeConfigGateId = null;
+    closeComparatorModal();
     playPopSound();
 }
 
@@ -1180,4 +1190,3 @@ window.onclick = function(event) {
 // Initial canvas size
 
 resizeCanvas();
-
