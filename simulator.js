@@ -1013,15 +1013,19 @@ function clearCanvas() {
 
 // --- PROGRESS CODE SYSTEM ---
 
+/* --- INTEGRATED PROGRESS SYSTEM WITH VERSION SIGNATURE --- */
+
+// This signature makes codes from this assessment incompatible with other versions
+const VERSION_SIG = "K3-A1-"; 
+
 function generateProgressCode() {
     let starString = "";
     challenges.forEach(task => {
         starString += (starScores[task.id] || 0).toString();
     });
 
-    const maxPossiblePoints = challenges.length; // Each task worth 1.0 when complete
+    const maxPossiblePoints = challenges.length;
     let earnedPoints = 0;
-    
     challenges.forEach(task => {
         const stars = starScores[task.id] || 0;
         if (stars === 1) earnedPoints += 0.5;
@@ -1031,14 +1035,11 @@ function generateProgressCode() {
     
     const progressPercent = Math.round((earnedPoints / maxPossiblePoints) * 100);
     const progressFormatted = progressPercent.toString().padStart(3, '0');
-
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const prefix = chars.charAt(Math.floor(Math.random() * 26)) + 
-                   chars.charAt(Math.floor(Math.random() * 26));
+    const prefix = chars.charAt(Math.floor(Math.random() * 26)) + chars.charAt(Math.floor(Math.random() * 26));
 
     let disguisedStars = "";
     const alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    
     for (let i = 0; i < starString.length; i++) {
         const starValue = parseInt(starString[i]);
         const hash1 = alphanumeric[(starValue * 7 + i * 3) % 36];
@@ -1047,66 +1048,58 @@ function generateProgressCode() {
     }
 
     const rawCode = prefix + progressFormatted + disguisedStars;
-    
     const checksum = btoa(Math.round(earnedPoints * 100).toString()).substring(0, 3);
     
-    return (rawCode + checksum).toUpperCase();
+    // ATTACH THE SIGNATURE HERE
+    return VERSION_SIG + (rawCode + checksum).toUpperCase();
 }
 
-function loadProgressCode(code) {
+function loadProgressCode(inputCode) {
     try {
-        if (code.length < 8) return false; // Minimum: 2 prefix + 3 progress + 2 chars + 3 checksum
-        
-        // Remove Prefix(2) and Progress(3) and Checksum(3)
+        // 1. CHECK FOR THE SIGNATURE
+        if (!inputCode.startsWith(VERSION_SIG)) {
+            alert("ACCESS DENIED: This progress code is from a different lesson or version. It cannot be used for this assessment.");
+            return false;
+        }
+
+        // 2. STRIP THE SIGNATURE TO GET THE RAW DATA
+        const code = inputCode.replace(VERSION_SIG, "");
+
+        if (code.length < 8) return false; 
         const checksumStart = code.length - 3;
         const dataPart = code.substring(5, checksumStart);
         
-        // Reverse the enhanced hash
         let newStarScores = {};
         const alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         
-        // Process in pairs (2 chars per star)
         for (let i = 0; i < dataPart.length; i += 2) {
             const taskIndex = Math.floor(i / 2);
             if (taskIndex >= challenges.length) break;
-            
             const hash1 = dataPart[i];
             const hash2 = dataPart[i + 1];
             
-            if (!hash1 || !hash2) break; // Safety check
-            
-            // Reverse engineer the star value by trying all possibilities (0-3)
             let foundStar = 0;
             for (let testStar = 0; testStar <= 3; testStar++) {
                 const expectedHash1 = alphanumeric[(testStar * 7 + taskIndex * 3) % 36];
                 const expectedHash2 = alphanumeric[(testStar * 11 + taskIndex * 5) % 36];
-                
                 if (hash1 === expectedHash1 && hash2 === expectedHash2) {
                     foundStar = testStar;
                     break;
                 }
             }
-            
             newStarScores[challenges[taskIndex].id] = foundStar;
-            if (foundStar > 0) {
-                completedTaskIds.add(challenges[taskIndex].id);
-            }
+            if (foundStar > 0) completedTaskIds.add(challenges[taskIndex].id);
         }
 
         starScores = newStarScores;
-        
-        // Update the task map if it's open
-        const taskGrid = document.getElementById('task-grid');
-        if (taskGrid && taskGrid.children.length > 0) {
-            openTaskMap(); // Refresh the display
-        }
-        
+        if (document.getElementById('task-grid')) openTaskMap();
         return true;
     } catch (e) {
         console.error("Invalid Code Format", e);
         return false;
     }
 }
+
 
 function generateTruthTable() {
     const inps = gates.filter(g => g.type === 'INPUT'), outs = gates.filter(g => g.type === 'OUTPUT');
@@ -1190,3 +1183,4 @@ window.onclick = function(event) {
 // Initial canvas size
 
 resizeCanvas();
+
